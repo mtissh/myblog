@@ -1,0 +1,76 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const menuItems = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Articles', path: '/articles' },
+  { name: 'Contact', path: '/contact' },
+];
+---
+
+<header class="fixed top-0 left-0 w-full bg-gray-800 bg-opacity-50 backdrop-blur-md z-20">
+  <nav class="container mx-auto px-6 py-5">
+    <div class="flex justify-center items-center">
+      <a href="/" class="text-gray-100 text-xl font-bold absolute left-12">Logo</a>
+      <div class="hidden md:flex space-x-12">
+        {menuItems.map((item) => (
+          <a
+            href={item.path}
+            class="text-gray-100 text-lg font-medium transition-all duration-300 hover:text-blue-400 relative menu-item"
+            data-path={item.path}
+          >
+            {item.name}
+            <span class="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-400 transform scale-x-0 transition-transform duration-300 origin-left"></span>
+          </a>
+        ))}
+      </div>
+      <button id="menu-toggle" class="md:hidden text-white absolute right-6">
+        <Icon name="mdi:menu" class="w-6 h-6" />
+      </button>
+    </div>
+  </nav>
+  <div id="mobile-menu" class="hidden md:hidden bg-gray-800 bg-opacity-95">
+    <nav class="container mx-auto px-6 py-3">
+      {menuItems.map((item) => (
+        <a
+          href={item.path}
+          class="block py-2 text-gray-100 text-lg font-medium transition-all duration-300 hover:text-blue-400 menu-item"
+          data-path={item.path}
+        >
+          {item.name}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  // 現在のページがリンクと一致した際に強調表示
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const currentPath = '/' + window.location.pathname.split('/')[1] || '/';
+
+    document.querySelectorAll('.menu-item').forEach(item => {
+      if (item.getAttribute('data-path') === currentPath) {
+        // クライアントサイドで直接色を変更（力技）
+        (item as HTMLElement).style.color = 'rgb(96, 165, 250)';
+      }
+    });
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
+
+<style>
+  @media (min-width: 768px) {
+    a:hover span {
+      transform: scaleX(1);
+    }
+  }
+</style>
