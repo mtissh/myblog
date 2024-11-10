@@ -1,3 +1,4 @@
+<!-- Start of Selection -->
 ---
 import Layout from '../layouts/Layout.astro'
 import { newtClient } from '../lib/newt'
@@ -7,23 +8,35 @@ const { items: articles } = await newtClient.getContents<Article>({
   appUid: 'blog',
   modelUid: 'article',
   query: {
-    select: ['title', 'slug', 'body'],
+    select: ['title', 'slug', 'coverImage', '_sys', 'tags'],
+    order: ['_sys.createdAt'],
   },
 })
 ---
 
-<Layout title="ishiyama blog" description="ishiyama blog">
-  <main>
-    <ul>
-      {
-        articles.map((article) => {
-          return (
-            <li>
-              <a href={`/articles/${article.slug}`}>{article.title}</a>
-            </li>
-          )
-        })
-      }
-    </ul>
-  </main>
+<Layout title="ishiyama blog">
+  <section class="flex flex-col items-center justify-center p-8 text-center text-gray-700">
+    <div class="flex justify-center my-4 px-4">
+      <img src="https://static.ishiyama.blog/wai.png" alt="wai" class="rounded-lg shadow-lg" />
+    </div>
+    <h1 class="text-4xl font-bold mb-2">ishiyama no</h1>
+    <h2 class="text-xl mb-8">雑記</h2>
+    
+    <div class="w-full max-w-4xl text-gray-100">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {articles.map(article => (
+          <a href={`/articles/${article.slug}`} class="block bg-gray-600 p-4 rounded-lg">
+            <img src={article.coverImage.src} alt={`${article.title}のサムネイル`} class="mb-2 w-full h-32 object-cover rounded" />
+            <h4 class="text-xl font-bold mb-2 truncate">{article.title}</h4>
+            <div class="flex flex-col items-start">
+              {article.tags.map(tag => (
+                <span class="text-xs bg-blue-500 text-white px-1 py-0.5 rounded">{tag.name}</span>
+              ))}
+            </div>
+            <p class="text-right w-full text-xs">{new Date(article._sys.raw.publishedAt).toLocaleDateString()}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 </Layout>
