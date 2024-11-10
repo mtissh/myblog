@@ -20,9 +20,8 @@ export const getStaticPaths = async () => {
 const { article } = Astro.props
 ---
 
-<Layout title={article.title} description="投稿詳細ページです">
+<Layout title={article.title}>
   <main>
-    <h2>{article.title}</h2>
-    <article set:html={article.body} />
+    <p class="text-black text-center">準備中...</p>
   </main>
 </Layout>
