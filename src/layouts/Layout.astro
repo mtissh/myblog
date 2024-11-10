@@ -36,7 +36,7 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <div class="h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col">
+    <div class="bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col">
       <main class="flex-grow py-10">
         <BackgroundAnimation client:only="react" />
         <Header />
@@ -50,8 +50,11 @@ const { title } = Astro.props;
 </html>
 
 <style is:global>
-  body {
-    margin: 0;
-    padding: 0;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden; /* 横スクロールを防止 */
+}
+
 </style>

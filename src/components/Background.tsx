@@ -12,7 +12,7 @@ interface Particle {
 const BackgroundAnimation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const animationIdRef = useRef<number | null>(null); // アニメーションIDを保持するため
+  const animationIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,37 +22,35 @@ const BackgroundAnimation: React.FC = () => {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+      const width = window.innerWidth;
+      const height = Math.max(window.innerHeight, document.documentElement.scrollHeight, document.body.scrollHeight);
 
-      // パーティクルの位置をキャンバスサイズに合わせて再設定
+      canvas.width = width;
+      canvas.height = height;
+
+      // キャンバスのリサイズ後にパーティクル位置を再配置
       particlesRef.current.forEach((particle) => {
-        particle.x = Math.random() * canvas.width;
-        particle.y = Math.random() * canvas.height;
+        particle.x = Math.random() * width;
+        particle.y = Math.random() * height;
       });
     };
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
     const createParticles = () => {
       const particles: Particle[] = [];
-      const particleCount = Math.max(100, Math.floor(canvas.height / 10)); // 高さに応じたパーティクル数
+      const particleCount = Math.floor(window.innerWidth / 10);
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 1,
+          radius: Math.random() * 3 + 1,
           color: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
+          vx: (Math.random() - 0.5) * 1,
+          vy: (Math.random() - 0.5) * 1,
         });
       }
       particlesRef.current = particles;
     };
-
-    createParticles();
 
     const animate = () => {
       if (!ctx) return;
@@ -76,7 +74,11 @@ const BackgroundAnimation: React.FC = () => {
       animationIdRef.current = requestAnimationFrame(animate);
     };
 
+    resizeCanvas();
+    createParticles();
     animate();
+
+    window.addEventListener('resize', resizeCanvas);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -89,7 +91,7 @@ const BackgroundAnimation: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 h-full w-full"
+      className="absolute inset-0 w-full"
       style={{ mixBlendMode: 'screen' }}
     />
   );
