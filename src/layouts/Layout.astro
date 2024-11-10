@@ -1,51 +1,57 @@
 ---
+import BackgroundAnimation from '../components/Background';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SEASONS } from '../lib/consts';
+
 interface Props {
-	title: string;
-	description: string;
+  title: string;
 }
 
-const { title, description } = Astro.props;
+const getSeason = () => {
+  const month = new Date().getMonth() + 1; // JavaScriptの月は0から始まるので+1する
+  if (month >= 3 && month <= 4) {
+    return SEASONS.SPRING;
+  } else if (month >= 5 && month <= 8) {
+    return SEASONS.SUMMER;
+  } else if (month >= 9 && month <= 10) {
+    return SEASONS.AUTUMN;
+  } else {
+    return SEASONS.WINTER;
+  }
+};
+
+// TODO: 季節ごとに背景変えたい
+
+const { title } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="ja">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col">
+      <main class="flex-grow py-10">
+        <BackgroundAnimation client:only="react" />
+        <Header />
+        <div class="bg-gray-100 w-4/5 mx-auto rounded-lg opacity-80 mt-10">
+          <slot />
+        </div>
+      </main>
+      <Footer />
+    </div>
+  </body>
 </html>
+
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background-size: 224px;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
+  body {
+    margin: 0;
+    padding: 0;
+  }
 </style>
